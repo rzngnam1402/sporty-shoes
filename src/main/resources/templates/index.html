@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sport Shoes Store</title>
+    <style>
+        /* Basic styling for demo purposes */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #bcbcbc 3px solid;
+        }
+        header a {
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 16px;
+        }
+        header li {
+            float: left;
+            display: inline;
+            padding: 0 20px 0 20px;
+        }
+        header #branding {
+            float: left;
+        }
+        header #branding h1 {
+            margin: 0;
+        }
+        header nav {
+            float: right;
+            margin-top: 10px;
+        }
+        header .highlight, header .current a {
+            color: #e8491d;
+            font-weight: bold;
+        }
+        .showcase {
+            min-height: 400px;
+            background: url('sport-shoes.jpg') no-repeat center center;
+            text-align: center;
+            color: #fff;
+            background-size: cover;
+        }
+        .showcase h1 {
+            margin-top: 100px;
+            font-size: 55px;
+            margin-bottom: 20px;
+            color: #000;
+
+        }
+        .showcase p {
+            font-size: 20px;
+            color: #000;
+        }
+        .newsletter {
+            min-height: 200px;
+            background: #333;
+            color: #fff;
+            padding-top: 40px;
+            text-align: center;
+        }
+        .newsletter h1 {
+            margin-bottom: 20px;
+        }
+        .newsletter form {
+            margin-top: 20px;
+            padding-bottom: 20px;
+        }
+        .newsletter input[type="email"] {
+            padding: 10px;
+            width: 300px;
+            font-size: 18px;
+            border: none;
+        }
+        .newsletter button {
+            padding: 10px 20px;
+            background: #e8491d;
+            color: #fff;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+        }
+        .boxes {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .box {
+            background: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+            margin: 10px;
+            flex-basis: calc(33.33% - 20px);
+        }
+        footer {
+            padding: 20px;
+            margin-top: 20px;
+            color: #fff;
+            background-color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <div id="branding">
+            <h1><span class="highlight">Sport</span> Shoes</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="current">Home</a></li>
+                <li><a th:href="@{api/auth/signin}">Login</a></li>
+                <li><a th:href="@{api/auth/signup}">Sign up</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<section class="showcase">
+    <div class="container">
+        <h1>Find Your Perfect Fit</h1>
+        <p>Explore our wide range of sport shoes designed for performance and style.</p>
+    </div>
+</section>
+
+<section class="newsletter">
+    <div class="container">
+        <h1>Subscribe To Our Newsletter</h1>
+        <form>
+            <input type="email" placeholder="Enter your email...">
+            <button type="submit">Subscribe</button>
+        </form>
+    </div>
+</section>
+
+<section class="boxes">
+    <div class="container">
+        <div class="box">
+            <img src="https://assets.adidas.com/images/w_600,f_auto,q_auto/dd73d923864546cda02423dfeff8dd22_9366/Gazelle_Shoes_Brown_IG4392_01_standard.jpg" alt="Running Shoes">
+            <h3>Running Shoes</h3>
+            <p>Discover our latest collection of running shoes.</p>
+        </div>
+        <div class="box">
+            <img src="https://assets.adidas.com/images/w_600,f_auto,q_auto/dd73d923864546cda02423dfeff8dd22_9366/Gazelle_Shoes_Brown_IG4392_01_standard.jpg" alt="Training Shoes">
+            <h3>Training Shoes</h3>
+            <p>Explore our comfortable and durable training shoes.</p>
+        </div>
+        <div class="box">
+            <img src="https://assets.adidas.com/images/w_600,f_auto,q_auto/dd73d923864546cda02423dfeff8dd22_9366/Gazelle_Shoes_Brown_IG4392_01_standard.jpg" alt="Basketball Shoes">
+            <h3>Basketball Shoes</h3>
+            <p>Check out our high-performance basketball shoes.</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2024 Sport Shoes. All rights reserved.</p>
+</footer>
+</body>
+</html>

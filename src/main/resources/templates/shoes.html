@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shoes by Categories</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .shoe-item {
+      margin-bottom: 20px;
+    }
+    .price {
+      color: #e8491d;
+      font-weight: bold;
+    }
+    main {
+      padding-top: 80px; /* Adjust according to your navbar height */
+    }
+    .card {
+      height: 100%; /* Ensure card takes full height */
+      display: flex;
+      flex-direction: column;
+    }
+    .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-text {
+      flex-grow: 1; /* Allow description to take remaining space */
+    }
+    .btn-container {
+
+      display: flex;
+      justify-content: space-between; /* Ensure buttons are spaced evenly */
+      margin-top: 20px; /* Push delete and purchase buttons to bottom of card */
+    }
+  </style>
+</head>
+<body>
+<header>
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="#">Sport Shoes</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Categories
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item category-filter" href="#" data-category="all">All Categories</a>
+            <div th:each="category : ${categories}">
+              <a class="dropdown-item category-filter" href="#" th:text="${category.getName()}" th:attr="data-category=${category.getId()}"></a>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Shoes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/shoes/add}">Add Shoes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/purchase}">Purchased</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/users}">User List</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/users/changepass}">Change Password</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" id="logoutButton">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<main role="main" class="container">
+  <div class="row" id="shoe-list">
+    <!-- Shoes will be dynamically rendered here -->
+    <div th:each="shoe : ${shoes}" class="col-lg-3 col-md-6 mb-4 shoe-item" th:attr="data-category=${shoe.category != null} ? ${shoe.category.id} : ''">
+      <div class="card">
+        <img src="https://assets.adidas.com/images/w_600,f_auto,q_auto/dd73d923864546cda02423dfeff8dd22_9366/Gazelle_Shoes_Brown_IG4392_01_standard.jpg">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${shoe.name}">Shoe Name</h5>
+          <p class="card-text" th:text="${shoe.description}">Shoe Description</p>
+          <p class="card-text" th:if="${shoe.category != null}" th:text="${shoe.category.name}">Category</p>
+          <p class="price" th:text="'$' + ${shoe.price}" th:remove="tag">Price</p>
+          <div class="btn-container">
+            <button type="button" class="btn btn-danger delete-button" th:attr="data-id=${shoe.id}">Delete</button>
+            <button type="button" class="btn btn-primary purchase-button" th:attr="data-id=${shoe.id}">Purchase</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- JavaScript for filtering and adding token -->
+<script th:inline="javascript">
+  document.getElementById('logoutButton').addEventListener('click', function(event) {
+        event.preventDefault();
+        localStorage.removeItem('token');
+        window.location.href = '/';
+    });
+
+  $(document).ready(function() {
+    var shoes = /*[[${shoes}]]*/ []; // Fetch shoes data from Thymeleaf model
+
+    function filterShoes(categoryId) {
+      $('.shoe-item').each(function() {
+        if (categoryId === 'all' || $(this).attr('data-category') === categoryId) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    }
+
+    // Initial render
+    filterShoes('all');
+
+    $('.category-filter').click(function(e) {
+      e.preventDefault();
+      var categoryId = $(this).attr('data-category');
+      filterShoes(categoryId);
+    });
+
+    $('.delete-button').click(function() {
+      var shoeId = $(this).attr("data-id");
+      var token = localStorage.getItem('token');
+      console.log('Delete Token:', token);
+
+      fetch(`/deleteShoe/${shoeId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        console.log(response)
+        if (response.status == 403) {
+          alert("You do not have authorization");
+          return;
+        }
+        alert("Deleted successfully!");
+        location.reload();
+      })
+
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Delete failed!');
+      });
+    });
+
+    $('.purchase-button').click(function() {
+      var shoeId = $(this).attr("data-id");
+      var token = localStorage.getItem('token');
+      console.log(shoeId);
+      console.log('Purchase Token:', token);
+
+      fetch(`/purchase/${shoeId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+        console.log(response)
+        if (response.status == 403) {
+          alert("You do not have authorization");
+          return;
+        }
+        alert("Purchased Successfully!!")
+        location.reload();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Purchased failed!');
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

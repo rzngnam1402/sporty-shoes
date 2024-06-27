@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User List</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            padding-top: 4.5rem; /* Adjust according to your navbar height */
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">Admin Dashboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item ">
+                    <a class="nav-link" th:href="@{/shoes}">Shoes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/shoes/add}">Add Shoes</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" th:href="@{/purchase}">Purchased</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/users}">User List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/changepass}">Change Password</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="logoutButton">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main role="main" class="container">
+    <h2 class="mt-5 mb-4">User List</h2>
+    <!-- Search form -->
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <form id="searchForm" class="form-inline">
+                <input type="text" class="form-control mr-2" id="searchInput" placeholder="Search users">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
+    <!-- User table -->
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Role</th>
+                </tr>
+                </thead>
+                <tbody id="userTableBody">
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}">1</td>
+                    <td th:text="${user.login}">admin</td>
+                    <td th:text="${user.role}">ROLE_ADMIN</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script th:inline="javascript">
+document.getElementById('logoutButton').addEventListener('click', function(event) {
+    event.preventDefault();
+    localStorage.removeItem('token');
+    window.location.href = '/';
+});
+
+// Handle search form submission
+document.getElementById('searchForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    var query = document.getElementById('searchInput').value.toLowerCase();
+    var rows = document.querySelectorAll('#userTableBody tr');
+
+    rows.forEach(function(row) {
+        var username = row.cells[1].innerText.toLowerCase();
+        var role = row.cells[2].innerText.toLowerCase();
+        if (username.includes(query) || role.includes(query)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+</script>
+</body>
+</html>
